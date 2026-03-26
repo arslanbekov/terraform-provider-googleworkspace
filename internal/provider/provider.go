@@ -231,7 +231,7 @@ func validateCredentials(v interface{}, p cty.Path) diag.Diagnostics {
 	if _, err := googleoauth.CredentialsFromJSON(context.Background(), []byte(creds)); err != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity:      diag.Error,
-			Summary:       fmt.Sprintf("JSON credentials in %q are not valid: %s", creds, err),
+			Summary:       fmt.Sprintf("JSON credentials are not valid: %s", err),
 			AttributePath: p,
 		})
 	}

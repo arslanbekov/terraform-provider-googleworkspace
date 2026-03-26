@@ -129,7 +129,7 @@ func transformCustomSchemasTo2DMap(customSchemas []interface{}) map[string]map[s
 				sorted := sortListOfInterfaces(list)
 				encoded, err := json.Marshal(sorted)
 				if err != nil {
-					panic(err)
+					return nil
 				}
 				schemaValues[k] = string(encoded)
 			} else {
@@ -2085,6 +2085,11 @@ func flattenCustomSchemas(schemaAttrObj interface{}, client *apiClient) ([]map[s
 			"schema_values": schemaValues,
 		})
 	}
+
+	// Sort by schema_name to prevent permadiff (Google API returns map with no guaranteed order).
+	sort.Slice(customSchemas, func(i, j int) bool {
+		return customSchemas[i]["schema_name"].(string) < customSchemas[j]["schema_name"].(string)
+	})
 
 	return customSchemas, nil
 }

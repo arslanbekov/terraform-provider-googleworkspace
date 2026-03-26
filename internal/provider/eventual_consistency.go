@@ -31,7 +31,7 @@ func (cc *consistencyCheck) reachedConsistency(numInserts int) bool {
 	// so that it checks that at least the last half of responses were consistent
 	maxConsistent := int(cc.timeout.Minutes()) * 6 / 2
 
-	return (cc.currConsistent == numConsistent && cc.etagChanges >= numInserts) ||
+	return (cc.currConsistent >= numConsistent && cc.etagChanges >= numInserts) ||
 		cc.currConsistent >= maxConsistent
 }
 
