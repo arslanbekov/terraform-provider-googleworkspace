@@ -35,7 +35,7 @@ terraform {
   required_providers {
     googleworkspace = {
       source  = "arslanbekov/googleworkspace"
-      version = "~> 0.12"
+      version = "~> 1.0.0"
     }
   }
 }
