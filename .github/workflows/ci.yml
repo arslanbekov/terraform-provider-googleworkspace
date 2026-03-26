@@ -46,7 +46,5 @@ jobs:
         uses: golangci/golangci-lint-action@v7
         with:
           version: latest
-          # Only lint new code on PRs, full lint on main push
-          args: >-
-            ./internal/provider
-            ${{ github.event_name == 'pull_request' && format('--new-from-rev={0}', github.event.pull_request.base.sha) || '' }}
+          only-new-issues: true
+          args: ./internal/provider
