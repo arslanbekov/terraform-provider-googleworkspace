@@ -1262,6 +1262,24 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, meta interfac
 		if diags.HasError() {
 			return diags
 		}
+
+		// Only keep schemas that are declared in the Terraform config.
+		// The Google API returns ALL custom schemas on a user, including ones
+		// that Terraform doesn't manage. Without filtering, these cause
+		// perpetual drift when a user moves between org units.
+		if configSchemas, ok := d.GetOk("custom_schemas"); ok {
+			managedNames := map[string]bool{}
+			for _, cs := range configSchemas.([]interface{}) {
+				managedNames[cs.(map[string]interface{})["schema_name"].(string)] = true
+			}
+			filtered := make([]map[string]interface{}, 0, len(customSchemas))
+			for _, cs := range customSchemas {
+				if managedNames[cs["schema_name"].(string)] {
+					filtered = append(filtered, cs)
+				}
+			}
+			customSchemas = filtered
+		}
 	}
 
 	d.Set("primary_email", user.PrimaryEmail)
